@@ -1,0 +1,147 @@
+import BigNumber from "bignumber.js";
+
+export const formOption = {
+  detail: true,
+  items: [
+    {
+      label: "销售合同",
+      prop: "code",
+    },
+    {
+      label: "客户",
+      prop: "trFullname",
+    },
+  ],
+};
+
+// 出存明细
+export const tableOption = {
+  menu: true,
+  menuWidth: 100,
+  columns: [
+    {
+      label: "出库单编号",
+      prop: "saleShipmentOrderCode",
+      width: 150,
+    },
+    {
+      label: "提单编号",
+      prop: "salePickUpOrderCode",
+      width: 150,
+    },
+    {
+      label: "商品编号",
+      prop: "itCode",
+      width: 130,
+    },
+    {
+      label: "内部名称",
+      prop: "itInternalName",
+      width: 150,
+    },
+    {
+      label: "品名/规格/材质",
+      width: 200,
+      formatter: (row) => {
+        const { itName, itSpec, itMatName } = row;
+        return `${itName}/${itSpec}/${itMatName}`;
+      },
+    },
+    {
+      label: "产地",
+      prop: "itFtyName",
+    },
+    {
+      label: "计量方式",
+      prop: "meteringModeName",
+    },
+    {
+      label: "销售数量/重量",
+      minWidth: 120,
+      formatter: (row) => {
+        const {
+          quantityUnitName,
+          weightUnitName,
+          saleQuantity,
+          saleWeight,
+        } = row;
+        return `${saleQuantity}${quantityUnitName}/${new BigNumber(
+          saleWeight.toFixed(6)
+        ).toNumber()}${weightUnitName}`;
+      },
+    },
+    {
+      label: "提单数量/重量",
+      minWidth: 120,
+      formatter: (row) => {
+        const { quantityUnitName, weightUnitName, quantity, weight } = row;
+        return `${quantity}${quantityUnitName}/${new BigNumber(
+          weight.toFixed(6)
+        ).toNumber()}${weightUnitName}`;
+      },
+    },
+    {
+      label: "出库数量/重量",
+      minWidth: 120,
+      formatter: (row) => {
+        const {
+          quantityUnitName,
+          weightUnitName,
+          shippedQuantity,
+          shippedWeight,
+        } = row;
+        return `${shippedQuantity}${quantityUnitName}/${new BigNumber(
+          shippedWeight.toFixed(6)
+        ).toNumber()}${weightUnitName}`;
+      },
+    },
+    {
+      label: "签收数量/重量",
+      minWidth: 120,
+      formatter: (row) => {
+        const {
+          quantityUnitName,
+          weightUnitName,
+          signQuantity,
+          signWeight,
+          signStatus,
+        } = row;
+        // 已签收、撤回待审核显示 、其他状态不显示
+        if (signStatus === 4 || signStatus === 5) {
+          return `${signQuantity}${quantityUnitName}/${new BigNumber(
+            signWeight.toFixed(6)
+          ).toNumber()}${weightUnitName}`;
+        } else {
+          return "0/0";
+        }
+      },
+    },
+    {
+      label: "签收差异数量/重量",
+      minWidth: 140,
+      formatter: (row) => {
+        const { quantityUnitName, weightUnitName, signStatus } = row;
+        if (signStatus === 4 || signStatus === 5) {
+          const differentQuantity = new BigNumber(
+            (
+              row.shippedQuantity - (row.signQuantity ? row.signQuantity : 0)
+            ).toFixed(3)
+          ).toNumber();
+          const differentWeight = new BigNumber(
+            (row.shippedWeight - (row.signWeight ? row.signWeight : 0)).toFixed(
+              6
+            )
+          ).toNumber();
+          return `${differentQuantity}${quantityUnitName}/${differentWeight}${weightUnitName}`;
+        } else {
+          return "0/0";
+        }
+      },
+    },
+    {
+      label: "调整来源",
+      prop: "adjustSources",
+      width: 150,
+    },
+  ],
+};
