@@ -1,8 +1,3 @@
-import ts from "typescript";
-import { parseComponent } from "vue-template-compiler";
-import { getNodeByKind } from "./helper";
-import { convertClass } from "./converters/classApiConverter";
-import { convertOptionsApi } from "./converters/optionsApiConverter";
 import { Project, SyntaxKind } from "ts-morph";
 
 const project = new Project({
@@ -62,23 +57,4 @@ export const convertSrc = (input: string): string => {
   // }
 
   // extractMethodsAndObjects(sourceFile);
-
-  return "hello world";
-
-  const exportAssignNode = getNodeByKind(
-    sourceFile,
-    ts.SyntaxKind.ExportAssignment
-  );
-  if (exportAssignNode) {
-    // optionsAPI
-    return convertOptionsApi(sourceFile);
-  }
-
-  const classNode = getNodeByKind(sourceFile, ts.SyntaxKind.ClassDeclaration);
-  if (classNode && ts.isClassDeclaration(classNode)) {
-    // classAPI
-    return convertClass(classNode, sourceFile);
-  }
-
-  throw new Error("no convert target");
 };
